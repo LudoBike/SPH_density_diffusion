@@ -3,7 +3,8 @@
 #                             SPyH
 ###########################################################################
 ###########################################################################
-# Authors :  R. Carmigniani & D. Violeau
+# Original authors :  R. Carmigniani & D. Violeau
+# Improvements for density diffusion : L. Druette
 # Version : SPyH
 # Contact : remi.carmigniani (at) enpc (dot) fr
 ###########################################################################
