@@ -479,11 +479,15 @@ def computeForcesART(
     alpha,
     eps,
     dr,
+    c0,
+    densityDiffusion=False,
     d=2,
 ):
     """
     Compute the forces using artificial viscous forces
     and the RHS for the continuity equation
+    If density diffusion is activated, it is computed using the Molteni and Colagrossi
+    scheme
     input :
         - partFLUID : True if a FLUID particle
         - partSPID :  particle space ID
@@ -500,6 +504,8 @@ def computeForcesART(
         - grav : gravitational acceleration
         - alpha, eps, dr : for the artificial viscosity
         - d : dimension
+        - c0 : numerical sound speed
+        - densityDiffusion : if True, density diffusion is applied
     return :
         - forces : table of the particle forces
         - drhodt : table of the density variation
@@ -551,6 +557,11 @@ def computeForcesART(
             forces[i, :] = np.sum(F_Pres, 0) + np.sum(F_visc, 0) + grav
             # continuity contribution
             drhodt[i] = np.sum(velocityDivContrib(rVelCont, rPos, dwdr, er, m), 0)
+            if densityDiffusion:
+                vol_j = m / rho_j
+                drhodt[i] += np.sum(
+                    densityDiffusion(rho_i, rho_j, vol_j, rPos, dwdr, h, c0), 0
+                )
     return forces, drhodt
 
 

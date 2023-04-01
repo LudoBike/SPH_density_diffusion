@@ -122,7 +122,7 @@ def MorrisViscContrib(mu, rho_i, rho_j, dwdr, rVel, rPos, m):
     return F
 
 
-# @njit
+@njit
 def densityDiffusionContrib(rho_i, rho_j, vol_j, rPos, dwdr, h, c0):
     """
     Density diffusion contribution using Molteni and Colagrossi scheme
