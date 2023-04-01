@@ -481,7 +481,8 @@ def computeForcesART(
     eps,
     dr,
     c0,
-    densityDiffusion=False,
+    delta,
+    densityDiffusion=True,
     d=2,
 ):
     """
@@ -504,6 +505,7 @@ def computeForcesART(
         - gamma : polytropic gas constant
         - grav : gravitational acceleration
         - alpha, eps, dr : for the artificial viscosity
+        - delta : for density diffusion
         - d : dimension
         - c0 : numerical sound speed
         - densityDiffusion : if True, density diffusion is applied
@@ -561,7 +563,7 @@ def computeForcesART(
             if densityDiffusion:
                 vol_j = m / rho_j
                 drhodt[i] += np.sum(
-                    densityDiffusion(rho_i, rho_j, vol_j, rPos, dwdr, h, c0), 0
+                    densityDiffusion(rho_i, rho_j, vol_j, rPos, dwdr, h, c0, delta), 0
                 )
     return forces, drhodt
 
