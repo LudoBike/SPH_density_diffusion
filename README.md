@@ -2,7 +2,7 @@
 This project implement density diffusion for SPH.
 
 This is an improvement of the code written by R. Carmigniani and D. Violeau.
-The code in the following file is their own work:
+The code in the following files is their own work:
 
  - `contrib.py`
  - `plotParticles.py`
