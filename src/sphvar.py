@@ -33,3 +33,6 @@ INFO = 9
 #
 maxSpaceNeibs = 9
 maxPartInSpace = 25
+
+# Density diffusion parameters
+delta = 0.2

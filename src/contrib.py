@@ -10,6 +10,7 @@
 # Some useful imports
 import numpy as np
 from numba import njit
+from sphvar import delta
 
 
 @njit
@@ -119,3 +120,15 @@ def MorrisViscContrib(mu, rho_i, rho_j, dwdr, rVel, rPos, m):
     F[:, 0] = 2 * mu * m / (rho_i * rho_j) * rVel[:, 0] * dwdr / rNorm
     F[:, 1] = 2 * mu * m / (rho_i * rho_j) * rVel[:, 1] * dwdr / rNorm
     return F
+
+
+# @njit
+def densityDiffusionContrib(rho_i, rho_j, vol_j, rPos, dwdr, h, c0):
+    """
+    Density diffusion contribution using Molteni and Colagrossi scheme
+    """
+    sigma = np.sqrt(5 / 18) * h
+    nu_p = delta * sigma * c0
+    rNorm = (rPos[:, 0] * rPos[:, 0] + rPos[:, 1] * rPos[:, 1]) ** 0.5
+
+    return 2 * nu_p * vol_j * (rho_i - rho_j) * dwdr / rNorm
