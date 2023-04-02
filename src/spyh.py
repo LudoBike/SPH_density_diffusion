@@ -11,15 +11,16 @@
 # Kernel Wendland
 import numpy as np
 from numba import njit
-from sphvar import nparameters, POS, RHO, INFO, maxPartInSpace, maxSpaceNeibs, SPID
-from state import pressure, density, soundSpeed
-from contrib import (
+from .sphvar import nparameters, POS, RHO, INFO, maxPartInSpace, maxSpaceNeibs, SPID
+from .state import pressure, density, soundSpeed
+from .contrib import (
     pressureInterpolationContrib,
     shepardContrib,
     pressureGradContrib,
     artViscContrib,
     velocityDivContrib,
     MorrisViscContrib,
+    densityDiffusionContrib,
 )
 
 
@@ -445,21 +446,19 @@ def interpolateBoundaryPeriodicX(
 
 
 @njit
-def CFLConditions(partVel, h, c0, grav, rhoF, mu, CFL=0.1):
+def CFLConditions(partVel, h, c0, grav, CFL=0.1):
     """
     return a acceptable time step
     dt1 : based on the speed of sound
     dt2 : based on the gravity
-    dt3 : based on the viscosity
-    output : the minimum of the 3
+    output : the minimum of the 2
     """
     vmax = np.max(
         (partVel[:, 0] * partVel[:, 0] + partVel[:, 1] * partVel[:, 1]) ** 0.5
     )
     dt1 = CFL * h / (c0 + vmax)
     dt2 = CFL * (h / np.linalg.norm(grav)) ** 0.5
-    dt3 = CFL * 0.5 * rhoF * h**2 / mu
-    return min(dt1, dt2, dt3)
+    return min(dt1, dt2)
 
 
 @njit
@@ -563,7 +562,10 @@ def computeForcesART(
             if densityDiffusion:
                 vol_j = m / rho_j
                 drhodt[i] += np.sum(
-                    densityDiffusion(rho_i, rho_j, vol_j, rPos, dwdr, h, c0, delta), 0
+                    densityDiffusionContrib(
+                        rho_i, rho_j, vol_j, rPos, dwdr, h, c0, delta
+                    ),
+                    0,
                 )
     return forces, drhodt
 
