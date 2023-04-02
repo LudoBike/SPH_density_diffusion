@@ -357,10 +357,10 @@ def interpolateBoundary(
             shepard = shepardContrib(vol_j, w_ij)
             shepard = max(np.sum(shepard, 0), shepardMin)
             # COMPLETE HERE
-            VTildeInt_x = -vel_j[:, 0] * vol_j * w_ij
-            VTildeInt_y = -vel_j[:, 1] * vol_j * w_ij
-            partVel[i, 0] = np.sum(VTildeInt_x, 0) / shepard
-            partVel[i, 1] = np.sum(VTildeInt_y, 0) / shepard
+            # VTildeInt_x = -vel_j[:, 0] * vol_j * w_ij
+            # VTildeInt_y = -vel_j[:, 1] * vol_j * w_ij
+            # partVel[i, 0] = np.sum(VTildeInt_x, 0) / shepard
+            # partVel[i, 1] = np.sum(VTildeInt_y, 0) / shepard
             # END
             pres = np.sum(PressInt, 0) / shepard
             partRho[i] = density(pres, B, rhoF, gamma)
