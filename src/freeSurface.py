@@ -18,8 +18,9 @@ def minEigenvalueR(volPart, er, rNorm, dwdr):
     nPart = len(rNorm)
     invR = np.zeros((2, 2))
     for j in range(nPart):
-        invR += volPart[j] * dwdr[j] * rNorm[j] * np.outer(er, er)
+        invR += -volPart[j] * dwdr[j] * rNorm[j] * np.outer(er[j], er[j])
 
+    print(np.linalg.eigvals(invR))
     return np.min(np.linalg.eigvals(invR))
 
 
@@ -41,13 +42,13 @@ def freeSurfaceDetection(
     output :
         - partLambda : table of fluid particules lambda
         - isolatedPart : table of ID of isolated particles (lambda <= 0.20)
-        - freeSurface : table of ID of particles belonging to free surface
+        - freeSurfacePart : table of ID of particles belonging to free surface
                         (0.20 < lambda < 0.75)
     """
     nPart = len(partFLUID)
     partLambda = -1 * np.ones_like(partFLUID)
     isolatedPart = []
-    freeSurface = []
+    freeSurfacePart = []
     for i in range(nPart):
         if partFLUID[i]:
             spid_i = int(partSPID[i])
@@ -65,8 +66,8 @@ def freeSurfaceDetection(
             volPart = m / partRho[listnb]
             partLambda[i] = minEigenvalueR(volPart, rPos, rNorm, dwdr)
             if partLambda[i] <= 0.20:
-                isolatedPart.append(spid_i)
+                isolatedPart.append(i)
             elif partLambda[i] > 0.20 and partLambda[i] < 0.75:
-                freeSurface.append(spid_i)
+                freeSurfacePart.append(i)
 
-    return partLambda, isolatedPart, freeSurface
+    return partLambda, isolatedPart, freeSurfacePart
