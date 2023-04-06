@@ -7,10 +7,12 @@
 ###########################################################################
 
 import numpy as np
+from numba import njit
 
 from .spyh import Fw
 
 
+@njit
 def minEigenvalueR(volPart, er, rNorm, dwdr):
     """
     Return the minimum eigenvalue of the inverse of the renormalization matrix
@@ -20,10 +22,10 @@ def minEigenvalueR(volPart, er, rNorm, dwdr):
     for j in range(nPart):
         invR += -volPart[j] * dwdr[j] * rNorm[j] * np.outer(er[j], er[j])
 
-    print(np.linalg.eigvals(invR))
     return np.min(np.linalg.eigvals(invR))
 
 
+@njit
 def freeSurfaceDetection(
     partFLUID, partSPID, partPos, partRho, listNeibSpace, aW, h, m
 ):
@@ -46,7 +48,7 @@ def freeSurfaceDetection(
                         (0.20 < lambda < 0.75)
     """
     nPart = len(partFLUID)
-    partLambda = -1 * np.ones_like(partFLUID)
+    partLambda = np.array(nPart * [-1.0])
     isolatedPart = []
     freeSurfacePart = []
     for i in range(nPart):
@@ -64,7 +66,7 @@ def freeSurfaceDetection(
             er[:, 0] = rPos[:, 0] / rNorm
             er[:, 1] = rPos[:, 1] / rNorm
             volPart = m / partRho[listnb]
-            partLambda[i] = minEigenvalueR(volPart, rPos, rNorm, dwdr)
+            partLambda[i] = minEigenvalueR(volPart, er, rNorm, dwdr)
             if partLambda[i] <= 0.20:
                 isolatedPart.append(i)
             elif partLambda[i] > 0.20 and partLambda[i] < 0.75:
