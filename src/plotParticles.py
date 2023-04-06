@@ -133,7 +133,7 @@ def particleOutline(part, partID, color, dr, PARTFIG):
     vrts_fluid = cnts + offs
     vrts_fluid = np.swapaxes(vrts_fluid, 0, 1)
     coll = PolyCollection(
-        vrts_fluid, array=None, facecolors="none", edgecolor=color, linewidths=3
+        vrts_fluid, array=None, facecolors="none", edgecolor=color, linewidths=10 * dr
     )
     ax.add_collection(coll)
     plt.show(block=False)
