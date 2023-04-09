@@ -7,10 +7,12 @@
 ###########################################################################
 
 import numpy as np
+from numba import njit
 
 from .spyh import Fw
 
 
+@njit
 def minEigenvalueR(volPart, er, rNorm, dwdr):
     """
     Return the minimum eigenvalue of the inverse of the renormalization matrix
@@ -20,10 +22,14 @@ def minEigenvalueR(volPart, er, rNorm, dwdr):
     for j in range(nPart):
         invR += -volPart[j] * dwdr[j] * rNorm[j] * np.outer(er[j], er[j])
 
+<<<<<<< HEAD
     print(np.min(np.linalg.eigvals(invR)))
+=======
+>>>>>>> 10f4a98bcf96eaec9408261dfdff391d9e29ecda
     return np.min(np.linalg.eigvals(invR))
 
 
+@njit
 def freeSurfaceDetection(
     partFLUID, partSPID, partPos, partRho, listNeibSpace, aW, h, m
 ):
@@ -46,7 +52,11 @@ def freeSurfaceDetection(
                         (0.20 < lambda < 0.75)
     """
     nPart = len(partFLUID)
+<<<<<<< HEAD
     partLambda = 1 * np.ones_like(partFLUID)
+=======
+    partLambda = np.array(nPart * [-1.0])
+>>>>>>> 10f4a98bcf96eaec9408261dfdff391d9e29ecda
     isolatedPart = []
     freeSurfacePart = []
     for i in range(nPart):
