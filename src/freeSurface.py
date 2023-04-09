@@ -20,7 +20,7 @@ def minEigenvalueR(volPart, er, rNorm, dwdr):
     for j in range(nPart):
         invR += -volPart[j] * dwdr[j] * rNorm[j] * np.outer(er[j], er[j])
 
-    print(np.linalg.eigvals(invR))
+    print(np.min(np.linalg.eigvals(invR)))
     return np.min(np.linalg.eigvals(invR))
 
 
@@ -46,7 +46,7 @@ def freeSurfaceDetection(
                         (0.20 < lambda < 0.75)
     """
     nPart = len(partFLUID)
-    partLambda = -1 * np.ones_like(partFLUID)
+    partLambda = 1 * np.ones_like(partFLUID)
     isolatedPart = []
     freeSurfacePart = []
     for i in range(nPart):
@@ -56,7 +56,7 @@ def freeSurfaceDetection(
             listnb = listNeibSpace[spid_i, :]
             listnb = listnb[listnb > -1]
             listnb = listnb[listnb != i]  # no self contribution
-            rPos = partPos[i, :] - partPos[listnb][:]
+            rPos = - partPos[i, :] + partPos[listnb][:]
             rNorm = (rPos[:, 0] * rPos[:, 0] + rPos[:, 1] * rPos[:, 1]) ** 0.5
             q = rNorm / h
             dwdr = Fw(q, aW, h)
@@ -64,7 +64,7 @@ def freeSurfaceDetection(
             er[:, 0] = rPos[:, 0] / rNorm
             er[:, 1] = rPos[:, 1] / rNorm
             volPart = m / partRho[listnb]
-            partLambda[i] = minEigenvalueR(volPart, rPos, rNorm, dwdr)
+            partLambda[i] = minEigenvalueR(volPart, er, rNorm, dwdr)
             if partLambda[i] <= 0.20:
                 isolatedPart.append(i)
             elif partLambda[i] > 0.20 and partLambda[i] < 0.75:
