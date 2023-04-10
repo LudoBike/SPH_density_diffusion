@@ -21,11 +21,6 @@ def minEigenvalueR(volPart, er, rNorm, dwdr):
     invR = np.zeros((2, 2))
     for j in range(nPart):
         invR += -volPart[j] * dwdr[j] * rNorm[j] * np.outer(er[j], er[j])
-
-<<<<<<< HEAD
-    print(np.min(np.linalg.eigvals(invR)))
-=======
->>>>>>> 10f4a98bcf96eaec9408261dfdff391d9e29ecda
     return np.min(np.linalg.eigvals(invR))
 
 
@@ -52,11 +47,7 @@ def freeSurfaceDetection(
                         (0.20 < lambda < 0.75)
     """
     nPart = len(partFLUID)
-<<<<<<< HEAD
-    partLambda = 1 * np.ones_like(partFLUID)
-=======
     partLambda = np.array(nPart * [-1.0])
->>>>>>> 10f4a98bcf96eaec9408261dfdff391d9e29ecda
     isolatedPart = []
     freeSurfacePart = []
     for i in range(nPart):
