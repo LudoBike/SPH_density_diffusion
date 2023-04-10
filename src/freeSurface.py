@@ -21,7 +21,6 @@ def minEigenvalueR(volPart, er, rNorm, dwdr):
     invR = np.zeros((2, 2))
     for j in range(nPart):
         invR += -volPart[j] * dwdr[j] * rNorm[j] * np.outer(er[j], er[j])
-
     return np.min(np.linalg.eigvals(invR))
 
 
@@ -58,7 +57,7 @@ def freeSurfaceDetection(
             listnb = listNeibSpace[spid_i, :]
             listnb = listnb[listnb > -1]
             listnb = listnb[listnb != i]  # no self contribution
-            rPos = partPos[i, :] - partPos[listnb][:]
+            rPos = - partPos[i, :] + partPos[listnb][:]
             rNorm = (rPos[:, 0] * rPos[:, 0] + rPos[:, 1] * rPos[:, 1]) ** 0.5
             q = rNorm / h
             dwdr = Fw(q, aW, h)
